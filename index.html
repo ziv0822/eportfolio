@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ziv (Toh E Jun) | Network & Security</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;500;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg-dark: #0a0a0a;
+  --card-bg: rgba(20, 20, 25, 0.7);
+  --text-main: #e0e0e0;
+  --text-muted: #94a3b8;
+  --neon-blue: #00f3ff;
+  --neon-purple: #bc13fe;
+  --border-color: rgba(255,255,255,0.1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  overflow-x: hidden;
+  line-height: 1.7;
+}
+
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+#bg-grid {
+  position: fixed;
+  top: -50%; left: -50%; width: 200%; height: 200%;
+  z-index: -1;
+  background-color: #0a0a0a;
+  background-image:
+      linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+  transform: rotate(-15deg);
+  animation: gridMove 30s linear infinite;
+}
+
+@keyframes gridMove {
+  0% { transform: translate(0, 0) rotate(-15deg); }
+  100% { transform: translate(0, 50px) rotate(-15deg); }
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 15px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.logo {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--neon-blue);
+  text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+}
+
+nav { display: flex; gap: 25px; }
+nav a {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+nav a:hover, nav a.active {
+  color: #fff;
+  text-shadow: 0 0 8px var(--neon-purple);
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 0 20px;
+}
+
+section {
+  padding: 100px 0;
+  opacity: 0; transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+section.visible { opacity: 1; transform: translateY(0); }
+
+h1, h2, h3 { margin-top: 0; color: #fff; }
+
+h2 {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  display: inline-block;
+  background: linear-gradient(90deg, #fff, var(--text-muted));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  border-left: 4px solid var(--neon-blue);
+  padding-left: 15px;
+}
+
+.hero {
+  min-height: 85vh;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  align-items: center;
+  gap: 40px;
+}
+
+.hero h1 { font-size: 4.5rem; line-height: 1.1; margin-bottom: 10px; }
+
+.typing-wrapper {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.8rem;
+  color: var(--neon-blue);
+  margin: 20px 0 30px 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.cursor {
+  display: inline-block;
+  width: 10px;
+  background-color: var(--neon-blue);
+  animation: blink 1s infinite;
+  margin-left: 5px;
+}
+
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+.profile-box {
+  position: relative;
+  width: 100%; max-width: 380px; aspect-ratio: 1/1;
+  margin: auto;
+}
+.profile-box img {
+  width: 100%; height: 100%; object-fit: cover;
+  border-radius: 20px;
+  border: 2px solid rgba(255,255,255,0.1);
+  box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
+  transition: transform 0.5s;
+}
+.profile-box:hover img { transform: scale(1.03) rotate(2deg); box-shadow: 0 0 50px rgba(188, 19, 254, 0.4); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 30px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  backdrop-filter: blur(10px);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 4px; height: 0;
+  background: var(--neon-purple);
+  transition: 0.4s;
+}
+.card:hover::before { height: 100%; }
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 40px -10px rgba(0,0,0,0.8), 0 0 20px rgba(188, 19, 254, 0.1);
+  border-color: rgba(255,255,255,0.3);
+}
+
+.subtitle { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 15px; display: block; }
+h3 { color: var(--neon-blue); font-size: 1.4rem; margin-bottom: 15px; }
+
+ul { padding-left: 20px; color: var(--text-main); }
+li { margin-bottom: 8px; }
+li::marker { color: var(--neon-purple); }
+
+.card img {
+  width: 100%; border-radius: 8px; border: 1px solid var(--border-color);
+  margin-bottom: 20px; transition: 0.3s; cursor: pointer; filter: brightness(0.9);
+}
+.card img:hover { filter: brightness(1.1); transform: scale(1.02); }
+
+.dual-img { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+.debate-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.btn-link {
+  display: inline-block; margin-top: 10px; margin-right: 10px;
+  padding: 8px 20px; border: 1px solid var(--neon-blue); border-radius: 4px;
+  color: var(--neon-blue); text-decoration: none; font-size: 0.85rem;
+  transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;
+}
+.btn-link:hover { background: var(--neon-blue); color: #000; box-shadow: 0 0 20px var(--neon-blue); }
+
+#imgModal {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.95); z-index: 2000;
+  justify-content: center; align-items: center; opacity: 0; transition: 0.3s;
+}
+#imgModal.show { opacity: 1; }
+#imgModal img { max-width: 90%; max-height: 90%; border: 2px solid var(--neon-blue); box-shadow: 0 0 50px var(--neon-blue); }
+
+@media (max-width: 768px) {
+  .hero { grid-template-columns: 1fr; text-align: center; gap: 20px;}
+  .typing-wrapper { justify-content: center; font-size: 1.2rem; }
+  .navbar { flex-direction: column; gap: 15px; }
+  nav { flex-wrap: wrap; justify-content: center; }
+  .hero h1 { font-size: 3rem; }
+  .debate-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="bg-grid"></div>
+
+<header class="navbar">
+  <div class="logo">&lt;Ziv /&gt;</div>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#education">Education</a>
+    <a href="#industry">Industry</a>
+    <a href="#pc-lab">Lab</a>
+    <a href="#design-thinking">DT</a>
+    <a href="#debate">Debate</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<div class="container">
+
+<section id="about" class="hero visible">
+  <div>
+    <h1>Hello, I’m Ziv</h1>
+    
+    <div class="typing-wrapper">
+      I am&nbsp;<span id="type-text"></span><span class="cursor">&nbsp;</span>
+    </div>
+    
+    <p style="font-size: 1.2rem; color: #fff; margin-top: 20px;">
+      My name is <strong>Toh E Jun</strong>.
+    </p>
+    <p class="subtitle" style="font-size: 1.1rem; max-width: 600px;">
+      I am a first-year Computing student at 
+      <strong style="color:var(--neon-blue)">Universiti Teknologi Malaysia (UTM)</strong>, 
+      majoring in <strong style="color:var(--neon-purple)">Computer Networks & Security</strong>.
+    </p>
+  </div>
+  <div class="profile-box">
+    <img src="images/profile.jpg" class="clickable" alt="Ziv Profile">
+  </div>
+</section>
+
+<section id="education">
+  <h2><span class="mono">01.</span> Education</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Primary School</h3>
+      <p class="subtitle">SJKC Chian Kuo</p>
+    </div>
+    <div class="card">
+      <h3>Secondary School</h3>
+      <p class="subtitle">SMJK Pei Hwa</p>
+    </div>
+    <div class="card" style="border-color: var(--neon-blue);">
+      <h3>University</h3>
+      <p class="subtitle">Universiti Teknologi Malaysia (UTM)</p>
+      <p>Bachelor of Computer Science</p>
+      <p style="color:var(--neon-purple); font-weight:bold;">Computer Networks & Security</p>
+    </div>
+  </div>
+</section>
+
+<section id="industry">
+  <h2><span class="mono">02.</span> Industry Experience</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Visit: UTM Digital</h3>
+      <p>
+        Gained insight into how ICT systems support digital services in an educational environment.
+      </p>
+      <a href="https://youtu.be/xbv79ZG3r8k" target="_blank" class="btn-link">Watch Video</a>
+    </div>
+
+    <div class="card">
+      <img src="images/industry-talk-ppg.jpg" class="clickable" style="max-height: 200px; object-fit: contain; background: #fff;">
+      <h3>Talk: PPG</h3>
+      <p>
+        From this industry talk, I learned how large-scale manufacturing companies implement ERP systems, 
+        automation, and integrated databases to improve operational efficiency, safety, and productivity.
+        The session highlighted how digital systems reduce manual workload, minimize human error, 
+        and enable better decision-making through real-time data.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3>Talk: Serunai Commerce</h3>
+      <p>
+        This talk focused on project management and system development, emphasizing how structured 
+        planning, coordination, and system integration are applied in real-world business environments.
+      </p>
+      <a href="Industry_Talk2_Serunai_Commerce_Report.pdf" target="_blank" class="btn-link">View Report</a>
+    </div>
+
+    <div class="card">
+      <h3>Visit: Johor Port</h3>
+      <div class="dual-img">
+        <img src="images/johor-port1.jpg" class="clickable" style="height:150px; object-fit:cover;">
+        <img src="images/johor-port2.jpg" class="clickable" style="height:150px; object-fit:cover;">
+      </div>
+      <p style="margin-top:15px">
+        Observed how ICT systems are used to support logistics operations, port safety, 
+        and coordination between different departments in a large-scale industrial environment.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="pc-lab">
+  <h2><span class="mono">03.</span> PC Architecture</h2>
+  <div class="card">
+    <div style="display:flex; flex-wrap:wrap; gap:30px; align-items:center;">
+      <div style="flex:1; min-width:300px;">
+        <img src="images/pc-assemble.jpg" class="clickable" style="max-height: 400px; object-fit: cover;">
+      </div>
+      <div style="flex:1; min-width:300px;">
+        <h3>PC Assemble Lab</h3>
+        <p style="font-size: 1.1rem;">
+          Through this lab, I gained hands-on experience in assembling a computer. 
+          It improved my practical understanding of hardware components and increased 
+          my confidence in handling computer systems.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="design-thinking">
+  <h2><span class="mono">04.</span> Design Thinking</h2>
+  <div class="card">
+    <h3>Student Expense Tracker</h3>
+    <p class="subtitle" style="font-size: 1.1rem; color: #ccc;">
+      This Design Thinking project focused on identifying students’ spending behavior 
+      and developing a low fidelity prototype for a student expense tracking application.
+    </p>
+    <div style="margin: 20px 0;">
+      <ul>
+        <li><strong>Empathy</strong> – understanding students’ spending habits</li>
+        <li><strong>Define</strong> – identifying overspending as a key problem</li>
+        <li><strong>Ideate</strong> – brainstorming expense tracking features</li>
+        <li><strong>Prototype</strong> – developing a low fidelity prototype using Figma</li>
+        <li><strong>Test</strong> – collecting feedback for improvement</li>
+      </ul>
+    </div>
+    <div>
+      <a href="https://stand-union-51665204.figma.site" target="_blank" class="btn-link">Figma V1</a>
+      <a href="https://radio-decay-38175623.figma.site" target="_blank" class="btn-link">Figma V2</a>
+      <a href="https://youtube.com/watch?v=a2B5yjDJKkA" target="_blank" class="btn-link" style="border-color:#ff4444; color:#ff4444;">Video</a>
+    </div>
+  </div>
+</section>
+
+<section id="debate">
+  <h2><span class="mono">05.</span> Debate Career</h2>
+  <div class="card">
+    <h3>Achievements</h3>
+    <ul>
+      <li>Sunway University Mandarin Debate Tournament – <strong style="color:var(--neon-blue)">Runner-up</strong></li>
+      <li>Northern Malaysia Mandarin Debate Tournament – <strong style="color:var(--neon-purple)">Second Runner-up</strong></li>
+    </ul>
+    <div class="debate-grid">
+      <img src="images/debate1.jpg" class="clickable">
+      <img src="images/debate2.jpg" class="clickable">
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <h2><span class="mono">06.</span> Initialize Handshake</h2>
+  <div class="grid" style="grid-template-columns: repeat(3, 1fr);">
+    <a href="https://github.com/ziv0822" target="_blank" class="card" style="text-align:center; text-decoration:none; cursor:pointer;">
+      <h3>GitHub</h3><p>View Code</p>
+    </a>
+    <a href="https://www.instagram.com/ziv_0822/" target="_blank" class="card" style="text-align:center; text-decoration:none; cursor:pointer;">
+      <h3>Instagram</h3><p>Follow Me</p>
+    </a>
+    <a href="https://www.linkedin.com/in/e-jun-toh-3335903a0/" target="_blank" class="card" style="text-align:center; text-decoration:none; cursor:pointer;">
+      <h3>LinkedIn</h3><p>Connect</p>
+    </a>
+  </div>
+</section>
+
+<footer style="text-align:center; margin-top:100px; padding-bottom:50px; color:#666;">
+  <p class="mono">© 2026 Ziv </p>
+</footer>
+
+</div>
+
+<div id="imgModal">
+  <img id="modalImg">
+</div>
+
+<script>
+const textElement = document.getElementById('type-text');
+const phrases = [
+  "a CS Student.", 
+  "a Network Enthusiast.", 
+  "a Debater.", 
+  "a Problem Solver."
+];
+
+let phraseIndex = 0;
+let charIndex = 0;
+let isDeleting = false;
+let typeSpeed = 100;
+
+function typeEffect() {
+  const currentPhrase = phrases[phraseIndex];
+  
+  if (isDeleting) {
+    textElement.textContent = currentPhrase.substring(0, charIndex - 1);
+    charIndex--;
+    typeSpeed = 50;
+  } else {
+    textElement.textContent = currentPhrase.substring(0, charIndex + 1);
+    charIndex++;
+    typeSpeed = 100;
+  }
+
+  if (!isDeleting && charIndex === currentPhrase.length) {
+    isDeleting = true;
+    typeSpeed = 2000; 
+  } else if (isDeleting && charIndex === 0) {
+    isDeleting = false;
+    phraseIndex = (phraseIndex + 1) % phrases.length;
+    typeSpeed = 500;
+  }
+
+  setTimeout(typeEffect, typeSpeed);
+}
+document.addEventListener('DOMContentLoaded', typeEffect);
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('section').forEach(sec => observer.observe(sec));
+
+const modal = document.getElementById("imgModal");
+const modalImg = document.getElementById("modalImg");
+document.querySelectorAll(".clickable").forEach(img => {
+  img.onclick = (e) => {
+    modalImg.src = img.src;
+    modal.style.display = "flex";
+    setTimeout(() => modal.classList.add("show"), 10);
+  };
+});
+modal.onclick = () => {
+  modal.classList.remove("show");
+  setTimeout(() => modal.style.display = "none", 300);
+};
+
+window.addEventListener("scroll", () => {
+  const sections = document.querySelectorAll("section");
+  const navLinks = document.querySelectorAll("nav a");
+  let current = "";
+  sections.forEach((section) => {
+    if (window.scrollY >= (section.offsetTop - 300)) current = section.id;
+  });
+  navLinks.forEach((link) => {
+    link.classList.remove("active");
+    if (link.getAttribute("href") === "#" + current) link.classList.add("active");
+  });
+});
+</script>
+
+</body>
+</html>
